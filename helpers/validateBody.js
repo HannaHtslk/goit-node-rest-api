@@ -1,16 +1,14 @@
-import {
-  createContactSchema,
-  updateContactSchema,
-} from "../schemas/contactsSchemas.js";
+import HttpError from "./HttpError.js";
 
-const validateBody = (req, res, next) => {
-  const schema =
-    req.method === "POST" ? createContactSchema : updateContactSchema;
-  const { error } = schema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  } else {
-    next();
-  }
+const validateBody = (contactSchema) => {
+  const foo = (req, res, next) => {
+    const { error } = contactSchema.validate(req.body);
+    if (error) {
+      return next(HttpError(400));
+    } else {
+      next();
+    }
+  };
+  return foo;
 };
 export default validateBody;
