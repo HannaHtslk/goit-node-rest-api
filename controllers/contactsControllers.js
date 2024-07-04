@@ -1,6 +1,5 @@
 import contactsService from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
-import { nanoid } from "nanoid";
 
 export const getAllContacts = async (req, res, next) => {
   try {
