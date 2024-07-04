@@ -5,7 +5,7 @@ import cors from "cors";
 import contactsRouter from "./routes/contactsRouter.js";
 import errorHandler from "./middlewares/errorHandlers.js";
 
-import notFoundHandler from "./middlewares/NotFoundHandler.js";
+import notFoundHandler from "./middlewares/notFoundHandler.js";
 
 const app = express();
 
