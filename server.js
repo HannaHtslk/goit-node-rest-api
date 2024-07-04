@@ -7,7 +7,10 @@ import errorHandler from "./middlewares/errorHandlers.js";
 
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 
+import env from "./helpers/env.js";
+
 const startServer = () => {
+  const port = Number(env("PORT", 3000));
   const app = express();
 
   app.use(morgan("tiny"));
@@ -20,8 +23,8 @@ const startServer = () => {
   app.use(notFoundHandler);
   app.use(errorHandler);
 
-  app.listen(3000, () => {
-    console.log("Server is running. Use our API on port: 3000");
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}.`);
   });
 };
 
