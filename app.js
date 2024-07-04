@@ -4,7 +4,7 @@ import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import errorHandler from "./middlewares/errorHandlers.js";
-import validateContact from "./helpers/validateBody.js";
+
 import notFoundHandler from "./middlewares/NotFoundHandler.js";
 
 const app = express();
@@ -14,7 +14,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/contacts", validateContact, contactsRouter);
+app.use("/api/contacts", contactsRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

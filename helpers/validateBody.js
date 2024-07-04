@@ -1,7 +1,9 @@
-import { createContactSchema } from "../schemas/contactsSchemas.js";
-import { updateContactSchema } from "../schemas/contactsSchemas.js";
+import {
+  createContactSchema,
+  updateContactSchema,
+} from "../schemas/contactsSchemas.js";
 
-const validateContact = (req, res, next) => {
+const validateBody = (req, res, next) => {
   const schema =
     req.method === "POST" ? createContactSchema : updateContactSchema;
   const { error } = schema.validate(req.body);
@@ -11,4 +13,4 @@ const validateContact = (req, res, next) => {
     next();
   }
 };
-export default validateContact;
+export default validateBody;
