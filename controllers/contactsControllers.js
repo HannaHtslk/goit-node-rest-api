@@ -1,4 +1,8 @@
-import { listContacts, getContactById } from "../services/contactsServices.js";
+import {
+  listContacts,
+  getContactById,
+  removeContact,
+} from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = async (req, res, next) => {
@@ -35,25 +39,25 @@ export const getOneContact = async (req, res, next) => {
   }
 };
 
-// export const deleteContact = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
+export const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-//     const data = await contactsService.removeContact(id);
+    const data = await removeContact(id);
 
-//     if (!data) {
-//       throw HttpError(404);
-//     }
+    if (!data) {
+      throw HttpError(404);
+    }
 
-//     res.json({
-//       status: 200,
-//       message: `Contact with id ${id} was deleted successfully`,
-//       data,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.json({
+      status: 200,
+      message: `Contact with id ${id} was deleted successfully`,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const createContact = async (req, res, next) => {
 //   try {
