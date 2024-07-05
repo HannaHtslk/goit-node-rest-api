@@ -2,6 +2,7 @@ import {
   listContacts,
   getContactById,
   removeContact,
+  addContact,
 } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 
@@ -59,25 +60,25 @@ export const deleteContact = async (req, res, next) => {
   }
 };
 
-// export const createContact = async (req, res, next) => {
-//   try {
-//     const { name, email, phone } = req.body;
+export const createContact = async (req, res, next) => {
+  try {
+    const { name, email, phone, favorite } = req.body;
 
-//     const data = await contactsService.addContact(name, email, phone);
+    const data = await addContact(name, email, phone, favorite);
 
-//     if (!data) {
-//       throw HttpError(400);
-//     }
+    if (!data) {
+      throw HttpError(400);
+    }
 
-//     res.status(201).json({
-//       status: 201,
-//       message: `Contact ${data.id} was added successfully`,
-//       data,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.status(201).json({
+      status: 201,
+      message: `Contact ${data.id} was added successfully`,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const updateContact = async (req, res, next) => {
 //   try {

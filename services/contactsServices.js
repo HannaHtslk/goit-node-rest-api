@@ -76,3 +76,6 @@ export const listContacts = () => Contact.find();
 export const getContactById = (_id) => Contact.findOne({ _id });
 
 export const removeContact = (_id) => Contact.findByIdAndDelete({ _id });
+
+export const addContact = (name, email, phone, favorite) =>
+  Contact.create({ name, email, phone, favorite });

@@ -3,7 +3,7 @@ import {
   getAllContacts,
   getOneContact,
   deleteContact,
-  // createContact,
+  createContact,
   // updateContact,
 } from "../controllers/contactsControllers.js";
 // import validateBody from "../helpers/validateBody.js";
@@ -20,7 +20,7 @@ contactsRouter.get("/:id", getOneContact);
 
 contactsRouter.delete("/:id", deleteContact);
 
-// contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post("/", createContact);
 
 // contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
 
