@@ -12,6 +12,7 @@ const initMongoDBConnection = async () => {
     const name = env("MONGODB_NAME");
 
     const DB_HOST = `mongodb+srv://${user}:${password}@${url}/${name}?retryWrites=true&w=majority&appName=Cluster0`;
+
     await mongoose.connect(DB_HOST);
 
     console.log("Database connection successful");
