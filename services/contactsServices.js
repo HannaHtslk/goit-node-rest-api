@@ -79,3 +79,6 @@ export const removeContact = (_id) => Contact.findByIdAndDelete({ _id });
 
 export const addContact = (name, email, phone, favorite) =>
   Contact.create({ name, email, phone, favorite });
+
+export const updateContact = (_id, name, email, phone, favorite) =>
+  Contact.findByIdAndUpdate({ _id });
