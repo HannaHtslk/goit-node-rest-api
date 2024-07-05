@@ -1,5 +1,5 @@
-import { listContacts } from "../services/contactsServices.js";
-// import HttpError from "../helpers/HttpError.js";
+import { listContacts, getContactById } from "../services/contactsServices.js";
+import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = async (req, res, next) => {
   try {
@@ -15,25 +15,25 @@ export const getAllContacts = async (req, res, next) => {
   }
 };
 
-// export const getOneContact = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
+export const getOneContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-//     const data = await contactsService.getContactById(id);
+    const data = await getContactById(id);
 
-//     if (!data) {
-//       throw HttpError(404);
-//     }
+    if (!data) {
+      throw HttpError(404);
+    }
 
-//     res.json({
-//       status: 200,
-//       message: `Contact with id ${id} get successfully`,
-//       data,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.json({
+      status: 200,
+      message: `Contact with id ${id} get successfully`,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const deleteContact = async (req, res, next) => {
 //   try {

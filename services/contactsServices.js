@@ -72,3 +72,5 @@
 import Contact from "../db/models/contact.js";
 
 export const listContacts = () => Contact.find();
+
+export const getContactById = (_id) => Contact.findOne({ _id });
