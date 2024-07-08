@@ -3,6 +3,8 @@ import {
   getContactById,
   removeContact,
   addContact,
+  updateContact,
+  updateStatusContact,
 } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 
@@ -80,22 +82,42 @@ export const createContact = async (req, res, next) => {
   }
 };
 
-// export const updateContact = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const { name, email, phone } = req.body;
+export const updContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone } = req.body;
+    const data = await updateContact(id, name, email, phone);
 
-//     const data = await contactsService.updateContact(id, name, email, phone);
-//     if (!data) {
-//       throw HttpError(400);
-//     }
+    if (!data) {
+      throw HttpError(400);
+    }
 
-//     res.json({
-//       status: 200,
-//       message: `Contact with id ${id} was updated successfully`,
-//       data,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.json({
+      status: 200,
+      message: `Contact with id ${id} was updated successfully`,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editFavoriteStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { favorite } = req.body;
+
+    const data = await updateStatusContact(id, favorite);
+    if (!data) {
+      throw HttpError(400);
+    }
+
+    res.json({
+      status: 200,
+      message: `Contact with id ${id} was updated successfully`,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

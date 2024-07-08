@@ -26,3 +26,7 @@ export const updateContactSchema = Joi.object({
     "string.empty": `"phone" cannot be an empty field`,
   }),
 });
+
+export const editFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
