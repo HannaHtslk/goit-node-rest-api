@@ -89,7 +89,7 @@ export const updContact = async (req, res, next) => {
     const data = await updateContact(id, name, email, phone);
 
     if (!data) {
-      throw HttpError(400);
+      throw HttpError(404);
     }
 
     res.json({
@@ -109,7 +109,7 @@ export const editFavoriteStatus = async (req, res, next) => {
 
     const data = await updateStatusContact(id, favorite);
     if (!data) {
-      throw HttpError(400);
+      throw HttpError(404);
     }
 
     res.json({
