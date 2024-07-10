@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { phoneRegex } from "../constants/contact-constants.js";
 
 export const createContactSchema = Joi.object({
   name: Joi.string().min(1).required().messages({
@@ -9,7 +10,7 @@ export const createContactSchema = Joi.object({
     "string.email": `"email" must be a valid email address`,
     "any.required": `"email" is a required field`,
   }),
-  phone: Joi.string().min(1).required().messages({
+  phone: Joi.string().min(10).pattern(phoneRegex).required().messages({
     "string.empty": `"phone" cannot be an empty field`,
     "any.required": `"phone" is a required field`,
   }),
@@ -22,7 +23,7 @@ export const updateContactSchema = Joi.object({
   email: Joi.string().email().optional().messages({
     "string.email": `"email" must be a valid email address`,
   }),
-  phone: Joi.string().min(1).optional().messages({
+  phone: Joi.string().min(10).pattern(phoneRegex).optional().messages({
     "string.empty": `"phone" cannot be an empty field`,
   }),
 });

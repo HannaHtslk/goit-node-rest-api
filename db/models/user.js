@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
-import { emailRegex } from "../../constants/user-constants";
+import { emailRegex } from "../../constants/user-constants.js";
+import { mongoSaveError, setMongoUpdateSettings } from "./hooks.js";
 
 const userSchema = new Schema(
   {
@@ -25,6 +26,10 @@ const userSchema = new Schema(
   },
   { versionKey: false, timestamps: true }
 );
+
+userSchema.post("save", mongoSaveError);
+userSchema.pre("findOneAndUpdate", setMongoUpdateSettings);
+userSchema.post("findOneAndUpdate", mongoSaveError);
 
 const User = model("user", userSchema);
 export default User;

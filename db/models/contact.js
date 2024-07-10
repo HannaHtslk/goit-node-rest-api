@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { phoneRegex } from "../../constants/contact-constants.js";
 
 const contactSchema = new Schema(
   {
@@ -11,10 +12,15 @@ const contactSchema = new Schema(
     },
     phone: {
       type: String,
+      match: phoneRegex,
     },
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
     },
   },
   { versionKey: false }
