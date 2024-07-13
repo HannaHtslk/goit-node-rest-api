@@ -1,6 +1,9 @@
 import HttpError from "../helpers/HttpError.js";
 import { findUser, userSignup } from "../services/userServices.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const { JWT_SECRET } = process.env;
 
 export const signup = async (req, res, next) => {
   try {
@@ -41,12 +44,17 @@ export const signin = async (req, res, next) => {
     if (!passwordVerification) {
       throw HttpError(401, "Email or password is wrong");
     }
+    const { _id: id } = user;
 
-    const token = "1213.3431.23323";
+    const payload = { id };
+
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
       status: 200,
-      token,
+      accessToken,
+      refreshToken,
       user: {
         email: user.email,
         subscription: user.subscription,
