@@ -64,9 +64,10 @@ export const deleteContact = async (req, res, next) => {
 
 export const createContact = async (req, res, next) => {
   try {
+    const { _id: owner } = req.user;
     const { name, email, phone, favorite } = req.body;
 
-    const data = await addContact(name, email, phone, favorite);
+    const data = await addContact(name, email, phone, favorite, owner);
 
     if (!data) {
       throw HttpError(400);

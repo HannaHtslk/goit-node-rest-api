@@ -48,7 +48,7 @@ export const signin = async (req, res, next) => {
 
     const payload = { id };
 
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
     const refreshToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
