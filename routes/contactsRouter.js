@@ -14,11 +14,11 @@ import {
   editFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
-import authenticate from "../middlewares/authenticate.js";
+// import authenticate from "../middlewares/authenticate.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.use(authenticate);
+// contactsRouter.use(authenticate);
 
 contactsRouter.get("/", getAllContacts);
 

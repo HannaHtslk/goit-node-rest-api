@@ -64,3 +64,18 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCurrentUser = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      status: 401,
+      message: "Unauthorized",
+    });
+  }
+  const { email, subscription } = req.user;
+  res.json({
+    status: 200,
+    message: "User retrieved successfully",
+    data: { email, subscription },
+  });
+};
