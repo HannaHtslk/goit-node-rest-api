@@ -1,5 +1,5 @@
 import HttpError from "../helpers/HttpError.js";
-import { findUser, userSignup } from "../services/userServices.js";
+import { findUser, userSignup, updateUser } from "../services/userServices.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -51,6 +51,8 @@ export const signin = async (req, res, next) => {
     const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
     const refreshToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
+    await updateUser({ _id: id }, { token: accessToken });
+
     res.json({
       status: 200,
       accessToken,
@@ -78,4 +80,18 @@ export const getCurrentUser = (req, res) => {
     message: "User retrieved successfully",
     data: { email, subscription },
   });
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+
+    await updateUser({ _id }, { token: null });
+
+    res.json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(HttpError(401, "Not Authorized"));
+  }
 };
