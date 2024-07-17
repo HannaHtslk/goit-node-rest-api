@@ -17,6 +17,9 @@ export const getAllContacts = async (req, res, next) => {
 
     const { _id: owner } = req.user;
     const filter = { owner };
+    if (req.query.favorite) {
+      filter.favorite = req.query.favorite === "true";
+    }
     const data = await listContacts({ filter, settings });
 
     res.json({
