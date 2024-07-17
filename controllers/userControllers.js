@@ -78,7 +78,7 @@ export const getCurrentUser = (req, res) => {
   res.json({
     status: 200,
     message: "User retrieved successfully",
-    data: { email, subscription },
+    user: { email, subscription },
   });
 };
 
@@ -88,9 +88,7 @@ export const logout = async (req, res, next) => {
 
     await updateUser({ _id }, { token: null });
 
-    res.json({
-      message: "Logged out successfully",
-    });
+    res.status(204).end();
   } catch (error) {
     next(HttpError(401, "Not Authorized"));
   }
