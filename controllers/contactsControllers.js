@@ -8,9 +8,16 @@ import {
 } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
 
+import parsePaginationParams from "../helpers/parsePaginationParams.js";
+
 export const getAllContacts = async (req, res, next) => {
   try {
-    const data = await listContacts();
+    const { page, limit } = parsePaginationParams(req.query);
+    const settings = { page, limit };
+
+    const { _id: owner } = req.user;
+    const filter = { owner };
+    const data = await listContacts({ filter, settings });
 
     res.json({
       status: 200,
@@ -24,9 +31,10 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id: _id } = req.params;
+    const { _id: owner } = req.user;
 
-    const data = await getContactById(id);
+    const data = await getContactById({ _id, owner });
 
     if (!data) {
       throw HttpError(404);
@@ -34,7 +42,7 @@ export const getOneContact = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: `Contact with id ${id} get successfully`,
+      message: `Contact with id ${_id} get successfully`,
       data,
     });
   } catch (error) {
@@ -44,9 +52,10 @@ export const getOneContact = async (req, res, next) => {
 
 export const deleteContact = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id: _id } = req.params;
+    const { _id: owner } = req.user;
 
-    const data = await removeContact(id);
+    const data = await removeContact({ _id, owner });
 
     if (!data) {
       throw HttpError(404);
@@ -54,7 +63,7 @@ export const deleteContact = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: `Contact with id ${id} was deleted successfully`,
+      message: `Contact with id ${_id} was deleted successfully`,
       data,
     });
   } catch (error) {
@@ -85,9 +94,10 @@ export const createContact = async (req, res, next) => {
 
 export const updContact = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { name, email, phone } = req.body;
-    const data = await updateContact(id, name, email, phone);
+    const { id: _id } = req.params;
+    const { _id: owner } = req.user;
+
+    const data = await updateContact({ _id, owner }, req.body);
 
     if (!data) {
       throw HttpError(404);
@@ -95,7 +105,7 @@ export const updContact = async (req, res, next) => {
 
     res.json({
       status: 200,
-      message: `Contact with id ${id} was updated successfully`,
+      message: `Contact with id ${_id} was updated successfully`,
       data,
     });
   } catch (error) {
@@ -105,17 +115,18 @@ export const updContact = async (req, res, next) => {
 
 export const editFavoriteStatus = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { id: _id } = req.params;
+    const { _id: owner } = req.user;
     const { favorite } = req.body;
 
-    const data = await updateStatusContact(id, favorite);
+    const data = await updateStatusContact({ _id, owner }, favorite);
     if (!data) {
       throw HttpError(404);
     }
 
     res.json({
       status: 200,
-      message: `Contact with id ${id} was updated successfully`,
+      message: `Contact with id ${_id} was updated successfully`,
       data,
     });
   } catch (error) {
