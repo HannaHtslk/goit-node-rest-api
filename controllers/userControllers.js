@@ -93,3 +93,24 @@ export const logout = async (req, res, next) => {
     next(HttpError(401, "Not Authorized"));
   }
 };
+
+export const updateSubscription = async (req, res, next) => {
+  try {
+    const { _id } = req.user;
+    const { subscription } = req.body;
+
+    const updatedUser = await updateUser({ _id }, { subscription });
+
+    if (!updatedUser) {
+      return next(HttpError(404, "User not found"));
+    }
+
+    res.json({
+      status: 200,
+      message: "Subscription updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
