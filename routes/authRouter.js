@@ -9,6 +9,7 @@ import {
   updateSubscription,
 } from "../controllers/userControllers.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 const authRouter = Router();
 
