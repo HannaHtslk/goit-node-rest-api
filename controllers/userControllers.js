@@ -2,11 +2,22 @@ import HttpError from "../helpers/HttpError.js";
 import { findUser, userSignup, updateUser } from "../services/userServices.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const { JWT_SECRET } = process.env;
 
+const avatarsPath = path.resolve("public", "avatars");
+
 export const signup = async (req, res, next) => {
   try {
+    const { path: oldPath, filename } = req.file;
+
+    const newPath = path.join(avatarsPath, filename);
+    await fs.rename(oldPath, newPath);
+
+    const avatarURL = path.join("avatars", filename);
+
     const { email, password } = req.body;
     const user = await findUser({ email });
 
@@ -16,7 +27,11 @@ export const signup = async (req, res, next) => {
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    const newUser = await userSignup({ ...req.body, password: hashedPass });
+    const newUser = await userSignup({
+      ...req.body,
+      avatarURL,
+      password: hashedPass,
+    });
 
     res.status(201).json({
       status: 201,
@@ -27,6 +42,7 @@ export const signup = async (req, res, next) => {
       },
     });
   } catch (error) {
+    await fs.unlink(req.file.path);
     next(error);
   }
 };

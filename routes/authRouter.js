@@ -15,7 +15,12 @@ const authRouter = Router();
 
 authRouter.get("/current", authenticate, getCurrentUser);
 
-authRouter.post("/register", validateBody(userAuthSchema), signup);
+authRouter.post(
+  "/register",
+  upload.single("avatar"),
+  validateBody(userAuthSchema),
+  signup
+);
 
 authRouter.post("/login", validateBody(userAuthSchema), signin);
 
