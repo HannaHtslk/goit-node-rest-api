@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
 import fs from "node:fs/promises";
 import path from "node:path";
+import Jimp from "jimp";
 
 const { JWT_SECRET } = process.env;
 
@@ -129,6 +130,10 @@ export const updateAvatar = async (req, res, next) => {
   try {
     const { path: oldPath, filename } = req.file;
     const { _id } = req.user;
+
+    const image = await Jimp.read(oldPath);
+    image.resize(250, 250);
+    await image.writeAsync(oldPath);
 
     const newPath = path.join(avatarsPath, filename);
     await fs.rename(oldPath, newPath);
