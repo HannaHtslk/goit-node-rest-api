@@ -7,6 +7,7 @@ import {
   signup,
   logout,
   updateSubscription,
+  updateAvatar,
 } from "../controllers/userControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
@@ -15,14 +16,16 @@ const authRouter = Router();
 
 authRouter.get("/current", authenticate, getCurrentUser);
 
-authRouter.post(
-  "/register",
-  upload.single("avatar"),
-  validateBody(userAuthSchema),
-  signup
-);
+authRouter.post("/register", validateBody(userAuthSchema), signup);
 
 authRouter.post("/login", validateBody(userAuthSchema), signin);
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  updateAvatar
+);
 
 authRouter.patch(
   "/",
