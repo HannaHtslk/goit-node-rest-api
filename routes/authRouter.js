@@ -1,6 +1,10 @@
 import { Router } from "express";
 import validateBody from "../helpers/validateBody.js";
-import { subscribtionSchema, userAuthSchema } from "../schemas/authSchemas.js";
+import {
+  emailAuthSchema,
+  subscribtionSchema,
+  userAuthSchema,
+} from "../schemas/authSchemas.js";
 import {
   getCurrentUser,
   signin,
@@ -9,6 +13,7 @@ import {
   updateSubscription,
   updateAvatar,
   verify,
+  resendVerify,
 } from "../controllers/userControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
@@ -18,6 +23,8 @@ const authRouter = Router();
 authRouter.post("/register", validateBody(userAuthSchema), signup);
 
 authRouter.get("/verify/:verificationCode", verify);
+
+authRouter.get("/verify", validateBody(emailAuthSchema), resendVerify);
 
 authRouter.post("/login", validateBody(userAuthSchema), signin);
 

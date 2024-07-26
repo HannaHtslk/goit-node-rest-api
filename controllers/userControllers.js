@@ -69,6 +69,30 @@ export const verify = async (req, res, next) => {
   });
 };
 
+export const resendVerify = async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await findUser({ email });
+  if (!user) {
+    throw HttpError(404, "Email not found");
+  }
+  if (user.verify) {
+    throw HttpError(400, "Email already verified");
+  }
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationCode}">Click to verify your email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
+
+  res.json({
+    message: "Verify email resend success",
+  });
+};
+
 export const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
