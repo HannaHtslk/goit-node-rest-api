@@ -36,7 +36,7 @@ export const signup = async (req, res, next) => {
     const verifyEmail = {
       to: email,
       subject: "Verify email",
-      html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/${verificationCode}">Click to verify your email</a>`,
+      html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationCode}">Click to verify your email</a>`,
     };
 
     await sendEmail(verifyEmail);
@@ -54,6 +54,21 @@ export const signup = async (req, res, next) => {
   }
 };
 
+export const verify = async (req, res, next) => {
+  const { verificationCode } = req.params;
+  const user = await findUser({ verificationCode });
+
+  if (!user) {
+    throw HttpError(404, "User not found or already verified");
+  }
+
+  await updateUser({ _id: user._id }, { verify: true, verificationCode: "" });
+
+  res.json({
+    message: "Email verified successfully!",
+  });
+};
+
 export const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -61,6 +76,10 @@ export const signin = async (req, res, next) => {
 
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
+    }
+
+    if (!user.verify) {
+      throw HttpError(401, "Email not verified");
     }
 
     const passwordVerification = await bcrypt.compare(password, user.password);
