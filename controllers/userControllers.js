@@ -6,8 +6,10 @@ import gravatar from "gravatar";
 import fs from "node:fs/promises";
 import path from "node:path";
 import Jimp from "jimp";
+import { nanoid } from "nanoid";
+import sendEmail from "../helpers/sendEmail.js";
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, BASE_URL } = process.env;
 
 const avatarsPath = path.resolve("public", "avatars");
 
@@ -22,12 +24,22 @@ export const signup = async (req, res, next) => {
     }
 
     const hashedPass = await bcrypt.hash(password, 10);
+    const verificationCode = nanoid();
 
     const newUser = await userSignup({
       ...req.body,
       avatarURL,
       password: hashedPass,
+      verificationCode,
     });
+
+    const verifyEmail = {
+      to: email,
+      subject: "Verify email",
+      html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/${verificationCode}">Click to verify your email</a>`,
+    };
+
+    await sendEmail(verifyEmail);
 
     res.status(201).json({
       status: 201,
