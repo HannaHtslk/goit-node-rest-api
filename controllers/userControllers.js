@@ -2,12 +2,19 @@ import HttpError from "../helpers/HttpError.js";
 import { findUser, userSignup, updateUser } from "../services/userServices.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+import fs from "node:fs/promises";
+import path from "node:path";
+import Jimp from "jimp";
 
 const { JWT_SECRET } = process.env;
+
+const avatarsPath = path.resolve("public", "avatars");
 
 export const signup = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const avatarURL = gravatar.url(email, { s: "200", r: "pg", d: "mm" });
     const user = await findUser({ email });
 
     if (user) {
@@ -16,7 +23,11 @@ export const signup = async (req, res, next) => {
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    const newUser = await userSignup({ ...req.body, password: hashedPass });
+    const newUser = await userSignup({
+      ...req.body,
+      avatarURL,
+      password: hashedPass,
+    });
 
     res.status(201).json({
       status: 201,
@@ -111,6 +122,43 @@ export const updateSubscription = async (req, res, next) => {
       data: updatedUser,
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAvatar = async (req, res, next) => {
+  try {
+    const { path: oldPath, filename } = req.file;
+    const { _id } = req.user;
+
+    const image = await Jimp.read(oldPath);
+    image.resize(250, 250);
+    await image.writeAsync(oldPath);
+
+    const newPath = path.join(avatarsPath, filename);
+    await fs.rename(oldPath, newPath);
+
+    const avatarURL = path.join("avatars", filename).replace(/\\/g, "/");
+
+    const updatedUser = await updateUser({ _id }, { avatarURL });
+
+    if (!updatedUser) {
+      return next(HttpError(404, "User not found"));
+    }
+
+    res.json({
+      status: 200,
+      message: "Avatar updated successfully!",
+      data: {
+        email: updatedUser.email,
+        subscription: updatedUser.subscription,
+        avatarURL: updatedUser.avatarURL,
+      },
+    });
+  } catch (error) {
+    if (req.file) {
+      await fs.unlink(req.file.path);
+    }
     next(error);
   }
 };
